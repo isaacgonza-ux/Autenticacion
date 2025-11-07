@@ -29,7 +29,7 @@ public class ApplicationConfig {
         return config.getAuthenticationManager();
     }
 
-
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
@@ -43,7 +43,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    private UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService(){
         return username -> userRepository.findByUsername(username)
         .orElseThrow(()-> new RuntimeException("User not found"));
     }
