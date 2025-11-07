@@ -21,21 +21,47 @@ public class JwtService {
     private static final String SECRET_KEY = "XWgEf7xRA6tkom6nODTX0W4GYYq6CnGOyzo+8QtJDnM=";
 
     public String getToken(UserDetails user) {
-        return buildToken(new HashMap<>(), user);
+
+        System.out.println("=== GENERANDO TOKEN ===");
+        System.out.println("Usuario: " + user.getUsername());
+        System.out.println("Authorities: " + user.getAuthorities());
+        String token =  buildToken(new HashMap<>(), user);
+
+          
+        System.out.println("Token generado: " + (token != null ? "SÍ" : "NULL"));
+        System.out.println("Longitud token: " + (token != null ? token.length() : 0));
+        
+        return token;
     }
 
     private String buildToken(HashMap<String, Object> extraClaims, UserDetails user) {
-        return Jwts.builder()
+       try{
+        String token = Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
+
+            System.out.println("Token construido exitosamente");
+            return token;
+       }catch(Exception e){
+            System.err.println("ERROR al construir token: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+       }
     }
 
     private Key getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+         try {
+            byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+            System.out.println("Clave decodificada correctamente. Bytes: " + keyBytes.length);
+            return Keys.hmacShaKeyFor(keyBytes);
+        } catch (Exception e) {
+            System.err.println("ERROR al decodificar clave: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 }
