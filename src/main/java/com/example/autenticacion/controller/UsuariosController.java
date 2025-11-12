@@ -1,5 +1,6 @@
 package com.example.autenticacion.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/usuarios")
 public class UsuariosController {
 
+    @GetMapping
     public String welcome(){
         return "Welcome to Usuarios API";
         }
