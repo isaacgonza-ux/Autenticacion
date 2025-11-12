@@ -1,0 +1,16 @@
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\AutenticacionApplication.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\auth\AuthController.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\auth\AuthResponse.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\auth\AuthService.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\auth\LoginRequest.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\auth\RegisterRequest.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\config\ApplicationConfig.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\config\SecurityConfig.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\controller\AdminController.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\controller\AdminProductProxyController.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\controller\UsuariosController.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\jwt\JwtAuthenticationFilter.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\jwt\JwtService.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\user\Role.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\user\User.java
+C:\Users\isaac\OneDrive\Documentos\Backend\autenticacion\autenticacion\src\main\java\com\example\autenticacion\user\UserRepository.java

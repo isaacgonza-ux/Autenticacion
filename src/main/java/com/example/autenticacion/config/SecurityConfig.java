@@ -31,9 +31,20 @@ public class SecurityConfig {
       .disable())
     .authorizeHttpRequests(authRequest ->
       authRequest
-      .requestMatchers("/auth/**").permitAll()
-      .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-      .anyRequest().authenticated()
+      //Rutas públicas (sin autenticación)
+      .requestMatchers("/auth/login",
+                      "/auth/register",
+                      "/auth/refresh",
+                      "/auth/forgot-password",
+                      "/auth/reset-password").permitAll()
+      //Rutas protegidas de auth (requieren autenticación)
+      .requestMatchers("/auth/me",
+                        "/auth/logout",
+                        "/auth/logout-all",
+                        "/auth/change-password",
+                        "/auth/profile").authenticated()
+                      .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                      .anyRequest().authenticated()
     )
     .sessionManagement(sessionManager -> 
       sessionManager

@@ -3,10 +3,14 @@ package com.example.autenticacion.jwt;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.example.autenticacion.user.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,41 +21,54 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
+    @Value("${jwt.secret:XWgEf7xRA6tkom6nODTX0W4GYYq6CnGOyzo+8QtJDnM=}")
+    private String SECRET_KEY;
+
+    @Value("${jwt.expiration:3600000}") // 1 hora por defecto
+    private Long JWT_EXPIRATION;
+
+    @Value("${jwt.refresh-expiration:604800000}") // 7 días por defecto
     
-    private static final String SECRET_KEY = "XWgEf7xRA6tkom6nODTX0W4GYYq6CnGOyzo+8QtJDnM=";
+    private Long REFRESH_EXPIRATION;
 
-    public String getToken(UserDetails user) {
-
-        System.out.println("=== GENERANDO TOKEN ===");
-        System.out.println("Usuario: " + user.getUsername());
-        System.out.println("Authorities: " + user.getAuthorities());
-        String token =  buildToken(new HashMap<>(), user);
-
-          
-        System.out.println("Token generado: " + (token != null ? "SÍ" : "NULL"));
-        System.out.println("Longitud token: " + (token != null ? token.length() : 0));
+     // Access Token (1 hora)
+    public String getToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
         
-        return token;
+        if (userDetails instanceof User) {
+            User user = (User) userDetails;
+            claims.put("userId", user.getId());
+            claims.put("email", user.getEmail());
+            claims.put("role", user.getRole().name());
+        }
+        
+        return buildToken(claims, userDetails, JWT_EXPIRATION);
     }
 
-    private String buildToken(HashMap<String, Object> extraClaims, UserDetails user) {
-       try{
-        String token = Jwts.builder()
+    // Refresh Token (7 días)
+    public String getRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        
+        if (userDetails instanceof User) {
+            User user = (User) userDetails;
+            claims.put("userId", user.getId());
+            claims.put("type", "refresh");
+        }
+        
+        return buildToken(claims, userDetails, REFRESH_EXPIRATION);
+    }
+
+     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long expiration) {
+        return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(user.getUsername())
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
-
-            System.out.println("Token construido exitosamente");
-            return token;
-       }catch(Exception e){
-            System.err.println("ERROR al construir token: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-       }
     }
+
+   
 
     private Key getKey() {
          try {
@@ -69,20 +86,32 @@ public class JwtService {
         return getClaim(token, Claims::getSubject);
     }
 
+     public Integer getUserIdFromToken(String token) {
+        return getClaim(token, claims -> claims.get("userId", Integer.class));
+    }
+
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userName=getUsernameFromToken(token);
         return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
         
     }
 
-    private Claims getAllClaims(String token){
+     public boolean isRefreshToken(String token) {
+        try {
+            String type = getClaim(token, claims -> claims.get("type", String.class));
+            return "refresh".equals(type);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private Claims getAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
-
     public <T> T getClaim(String token, Function<Claims,T> claimsResolver){
         final Claims claims = getAllClaims(token);
         return claimsResolver.apply(claims);
@@ -98,4 +127,10 @@ public class JwtService {
     private boolean isTokenExpired(String token) {
         return getExpiration(token).before(new Date());
     }
+
+    public Long getExpirationTime() {
+        return JWT_EXPIRATION / 1000; // Retorna en segundos
+    }
+
+
 }
