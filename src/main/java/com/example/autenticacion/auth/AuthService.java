@@ -3,6 +3,7 @@ package com.example.autenticacion.auth;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.sql.Delete;
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -270,7 +271,21 @@ public class AuthService {
         userRepository.save(user);
         return mapToUserProfile(user);
     }
-
+    
+        @Transactional
+        public MessageResponse deleteAccount(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        //. Borrar tokens asociados al usuario
+        refreshTokenRepository.deleteByUser(user);
+        passwordResetTokenRepository.deleteByUser(user);
+        // Eliminar usuario
+        userRepository.delete(user);
+        return MessageResponse.builder()
+                .success(true)
+                .message("Cuenta eliminada exitosamente")
+                .build();
+    }
     
     // ============================================
     // MÉTODOS AUXILIARES

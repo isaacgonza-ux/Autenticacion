@@ -3,6 +3,7 @@ package com.example.autenticacion.auth;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -84,6 +85,12 @@ public class AuthController{
     public ResponseEntity<UserProfileResponse> updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
         String username = getCurrentUsername();
         return ResponseEntity.ok(authService.updateProfile(username, request));
+    }
+
+    @DeleteMapping("/delete-account")
+    public ResponseEntity<MessageResponse> deleteAccount() {
+        String username = getCurrentUsername();
+        return ResponseEntity.ok(authService.deleteAccount(username));
     }
 
     // ============================================
