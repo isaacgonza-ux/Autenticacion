@@ -41,7 +41,7 @@ public class DataLoader implements CommandLineRunner {
         try {
             User admin = User.builder()
                     .username("admin")
-                    .password(passwordEncoder.encode("admin123"))
+                    .password(passwordEncoder.encode("admin123456"))
                     .name("Administrator")
                     .email("admin@tienda.com")
                     .role(Role.ADMIN)
@@ -49,13 +49,13 @@ public class DataLoader implements CommandLineRunner {
                     .build();
             
             userRepository.save(admin);
-            System.out.println("✅ Usuario ADMIN creado: admin / admin123");
+            System.out.println("✅ Usuario ADMIN creado: admin / admin123456");
         } catch (Exception e) {
             System.err.println("❌ Error creando admin: " + e.getMessage());
         }
 
         // Crear 30 usuarios regulares
-        for (int i = 1; i <= 30; i++) {
+        for (int i = 1; i <= 5; i++) {
             try {
                 String firstName = faker.name().firstName();
                 String lastName = faker.name().lastName();
@@ -95,7 +95,7 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("👤 Usuarios regulares: " + regularUsers);
         System.out.println("===========================================");
         System.out.println("🔑 Credenciales de prueba:");
-        System.out.println("   Admin: admin / admin123");
+        System.out.println("   Admin: admin / admin123456");
         System.out.println("   Users: john1 / password123");
         System.out.println("          mary2 / password123");
         System.out.println("          ... etc");
