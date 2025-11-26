@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.autenticacion.user.User;
+import com.example.autenticacion.user.UserRepository;
 
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
@@ -28,52 +29,49 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+     private final JwtService jwtService;
+    private final UserRepository userRepository; // Cambiamos a usar directamente el repositorio
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
-        final String token = getTokenFromRequest(request);
-        final String username;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException, java.io.IOException {
 
-        if (token == null){
+        final String token = getTokenFromRequest(request);
+
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        username = jwtService.getUsernameFromToken(token);
+        // Extraer username del token
+        String username = jwtService.getUsernameFromToken(token);
 
-        if (username!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            
+            // CAMBIO IMPORTANTE: Buscar por username en lugar de email
+            UserDetails userDetails = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-          if(jwtService.isTokenValid(token, userDetails)){
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities());
+            if (jwtService.isTokenValid(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-          }
-            
+            }
         }
+
         filterChain.doFilter(request, response);
-        
     }
 
-    
-    
+    private String getTokenFromRequest(HttpServletRequest request) {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-    private String getTokenFromRequest(HttpServletRequest request){
-        final String authHeader=request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer")){
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
-
         return null;
-
     }
-
-    
 }

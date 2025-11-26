@@ -43,7 +43,7 @@ public class SecurityConfig {
                         "/auth/logout-all",
                         "/auth/change-password",
                         "/auth/profile").authenticated()
-                      .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                      .requestMatchers("/admin/**").hasRole("ADMIN")
                       .anyRequest().authenticated()
     )
     .sessionManagement(sessionManager -> 
