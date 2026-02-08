@@ -17,18 +17,18 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret:XWgEf7xRA6tkom6nODTX0W4GYYq6CnGOyzo+8QtJDnM=}")
+   @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    @Value("${jwt.expiration:3600000}") // 1 hora por defecto
+    @Value("${jwt.expiration}")
     private Long JWT_EXPIRATION;
 
-    @Value("${jwt.refresh-expiration:604800000}") // 7 días por defecto
-    
+    @Value("${jwt.refresh-expiration}")
     private Long REFRESH_EXPIRATION;
 
      // Access Token (1 hora)
@@ -78,7 +78,7 @@ public class JwtService {
         } catch (Exception e) {
             System.err.println("ERROR al decodificar clave: " + e.getMessage());
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("No se pudo decodificar la clave JWT", e);
         }
     }
 
@@ -131,6 +131,13 @@ public class JwtService {
     public Long getExpirationTime() {
         return JWT_EXPIRATION / 1000; // Retorna en segundos
     }
+
+    @PostConstruct
+    void check() {
+    byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+    System.out.println("JWT KEY SIZE = " + keyBytes.length);
+}
+
 
 
 }
