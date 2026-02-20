@@ -1,4 +1,4 @@
-package com.example.autenticacion.auth;
+package com.example.autenticacion.admin;
 
 
 import java.util.List;
@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.autenticacion.auth.dto.CreateUserByAdminRequest;
+import com.example.autenticacion.auth.dto.MessageResponse;
+import com.example.autenticacion.auth.dto.UserProfileResponse;
 
 import lombok.RequiredArgsConstructor;
 

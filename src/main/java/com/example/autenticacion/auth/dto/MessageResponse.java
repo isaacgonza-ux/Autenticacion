@@ -1,4 +1,4 @@
-package com.example.autenticacion.auth;
+package com.example.autenticacion.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateProfileRequest {
-    private String name;
-    private String username;
+public class MessageResponse {
+    private boolean success;
+    private String message;
 }
-

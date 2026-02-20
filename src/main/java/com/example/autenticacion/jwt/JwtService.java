@@ -21,7 +21,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret:XWgEf7xRA6tkom6nODTX0W4GYYq6CnGOyzo+8QtJDnM=}")
+    @Value("${jwt.secret}")
     private String SECRET_KEY;
 
     @Value("${jwt.expiration:3600000}") // 1 hora por defecto

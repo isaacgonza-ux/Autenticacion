@@ -11,6 +11,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.autenticacion.auth.dto.AuthResponse;
+import com.example.autenticacion.auth.dto.ChangePasswordRequest;
+import com.example.autenticacion.auth.dto.ForgotPasswordRequest;
+import com.example.autenticacion.auth.dto.LoginRequest;
+import com.example.autenticacion.auth.dto.MessageResponse;
+import com.example.autenticacion.auth.dto.RefreshTokenRequest;
+import com.example.autenticacion.auth.dto.RegisterRequest;
+import com.example.autenticacion.auth.dto.ResetPasswordRequest;
+import com.example.autenticacion.auth.dto.UpdateProfileRequest;
+import com.example.autenticacion.auth.dto.UserProfileResponse;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 

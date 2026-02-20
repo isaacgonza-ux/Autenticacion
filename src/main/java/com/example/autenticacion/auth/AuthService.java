@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.hibernate.sql.Delete;
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,11 +18,21 @@ import jakarta.transaction.Transactional;
 
 import com.example.autenticacion.user.User;
 import com.example.autenticacion.AutenticacionApplication;
+import com.example.autenticacion.auth.dto.AuthResponse;
+import com.example.autenticacion.auth.dto.ChangePasswordRequest;
+import com.example.autenticacion.auth.dto.ForgotPasswordRequest;
+import com.example.autenticacion.auth.dto.LoginRequest;
+import com.example.autenticacion.auth.dto.MessageResponse;
+import com.example.autenticacion.auth.dto.RefreshTokenRequest;
+import com.example.autenticacion.auth.dto.RegisterRequest;
+import com.example.autenticacion.auth.dto.ResetPasswordRequest;
+import com.example.autenticacion.auth.dto.UpdateProfileRequest;
+import com.example.autenticacion.auth.dto.UserProfileResponse;
 import com.example.autenticacion.jwt.JwtService;
-import com.example.autenticacion.user.PasswordResetToken;
-import com.example.autenticacion.user.PasswordResetTokenRepository;
-import com.example.autenticacion.user.RefreshToken;
-import com.example.autenticacion.user.RefreshTokenRepository;
+import com.example.autenticacion.token.PasswordResetToken;
+import com.example.autenticacion.token.PasswordResetTokenRepository;
+import com.example.autenticacion.token.RefreshToken;
+import com.example.autenticacion.token.RefreshTokenRepository;
 import com.example.autenticacion.user.Role;
 import lombok.RequiredArgsConstructor;
 
@@ -299,6 +310,11 @@ public class AuthService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
+    }
+
+     @Scheduled(cron = "0 0 0 * * ?") // Todos los días a medianoche
+    public void deleteExpiredTokens() {
+        refreshTokenRepository.deleteByExpiresAtBefore(LocalDateTime.now());
     }
 
     private AuthResponse buildAuthResponse(User user, String accessToken, String refreshToken) {

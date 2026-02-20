@@ -1,4 +1,4 @@
-package com.example.autenticacion.auth;
+package com.example.autenticacion.auth.dto;
 
 import com.example.autenticacion.user.Role;
 

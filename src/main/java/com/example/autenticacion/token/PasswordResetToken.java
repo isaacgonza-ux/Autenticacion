@@ -1,4 +1,4 @@
-package com.example.autenticacion.user;
+package com.example.autenticacion.token;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,18 +7,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
+import com.example.autenticacion.user.User;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "refresh_tokens")
-public class RefreshToken {
+@Table(name = "password_reset_tokens")
+public class PasswordResetToken {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pwd_reset_token_seq")
+    @SequenceGenerator(name = "pwd_reset_token_seq", sequenceName = "PWD_RESET_TOKEN_SEQUENCE", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 500)
+    @Column(nullable = false, unique = true)
     private String token;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,14 +35,14 @@ public class RefreshToken {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "revoked")
-    private Boolean revoked = false;
+    @Column(name = "used")
+    private Boolean used = false;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        if (revoked == null) {
-            revoked = false;
+        if (used == null) {
+            used = false;
         }
     }
 
