@@ -48,3 +48,6 @@ cwallet.sso
 *.jks
 
 
+
+src/main/resources/application-dev.properties
+src/main/resources/application-test.properties
