@@ -15,6 +15,7 @@ import com.example.autenticacion.auth.dto.AuthResponse;
 import com.example.autenticacion.auth.dto.ChangePasswordRequest;
 import com.example.autenticacion.auth.dto.ForgotPasswordRequest;
 import com.example.autenticacion.auth.dto.LoginRequest;
+import com.example.autenticacion.auth.dto.LoginRequestAndroid;
 import com.example.autenticacion.auth.dto.MessageResponse;
 import com.example.autenticacion.auth.dto.RefreshTokenRequest;
 import com.example.autenticacion.auth.dto.RegisterRequest;
@@ -39,6 +40,14 @@ public class AuthController{
 
     return ResponseEntity.ok(authService.login(request));
   }
+
+  //login app android
+  @PostMapping("/login-android")
+  public ResponseEntity<AuthResponse>loginAndroid(@RequestBody LoginRequestAndroid request) {
+      
+      return ResponseEntity.ok(authService.loginAppAndroid(request));
+  }
+  
 
   @PostMapping("/register")
   public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){

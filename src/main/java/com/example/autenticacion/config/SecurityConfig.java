@@ -33,6 +33,7 @@ public class SecurityConfig {
       authRequest
       //Rutas públicas (sin autenticación)
       .requestMatchers("/auth/login",
+                      "/auth/login-android",
                       "/auth/register",
                       "/auth/refresh",
                       "/auth/forgot-password",
@@ -48,7 +49,7 @@ public class SecurityConfig {
                         "/auth/logout-all",
                         "/auth/change-password",
                         "/auth/profile").authenticated()
-                      .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                      .requestMatchers("/admin/**").hasRole("ADMIN")
                       .anyRequest().authenticated()
     )
     .sessionManagement(sessionManager -> 
@@ -62,24 +63,5 @@ public class SecurityConfig {
 
 
   
- /*  private final JwtAuthFilter jwtAuthFilter;
-
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-           .requestMatchers("/auth/**").permitAll()
-           .requestMatchers("/admin/**").hasRole("ADMIN")
-           .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
-           .anyRequest().authenticated()
-        )
-        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-    http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-    return http.build();
-  }
-
-  @Bean
-  public BCryptPasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }*/
 }
 

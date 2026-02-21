@@ -22,6 +22,7 @@ import com.example.autenticacion.auth.dto.AuthResponse;
 import com.example.autenticacion.auth.dto.ChangePasswordRequest;
 import com.example.autenticacion.auth.dto.ForgotPasswordRequest;
 import com.example.autenticacion.auth.dto.LoginRequest;
+import com.example.autenticacion.auth.dto.LoginRequestAndroid;
 import com.example.autenticacion.auth.dto.MessageResponse;
 import com.example.autenticacion.auth.dto.RefreshTokenRequest;
 import com.example.autenticacion.auth.dto.RegisterRequest;
@@ -47,6 +48,8 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
    
+   
+   //login correo+contraseña
     @Transactional
     public AuthResponse login(LoginRequest request) {
         
@@ -70,6 +73,22 @@ public class AuthService {
         return buildAuthResponse(user, accessToken, refreshToken);
 
 
+
+    }
+    //Login app android
+    @Transactional
+    public AuthResponse loginAppAndroid(LoginRequestAndroid request){
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
+        User user = userRepository.findByUsername(request.getUsername())
+        .orElseThrow(() -> new RuntimeException("Nombre de usuario no encontrado"));
+
+        String accessToken = jwtService.getToken(user);
+        String refreshToken = jwtService.getRefreshToken(user);
+
+        saveRefreshToken(user, refreshToken);
+        return buildAuthResponse(user, accessToken, refreshToken);
 
     }
 

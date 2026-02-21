@@ -36,7 +36,7 @@ public class DataLoader implements CommandLineRunner {
         
         Faker faker = new Faker();
 
-        // 1. Crear Admin (igual que lo tenías)
+        // 1. Crear Admin 
         User admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder.encode("admin123456"))
