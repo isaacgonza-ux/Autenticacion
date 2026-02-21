@@ -17,6 +17,8 @@ import com.example.autenticacion.auth.dto.MessageResponse;
 import com.example.autenticacion.auth.dto.UserProfileResponse;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -31,8 +33,12 @@ public class AdminController {
     }
 
     @GetMapping("/get_users")
-    public ResponseEntity<List<UserProfileResponse>> getAllUsers() {
-        return ResponseEntity.ok(adminService.getAllUsers());
+    public ResponseEntity<Page<UserProfileResponse>> getAllUsers(
+        @RequestParam(defaultValue = "0")int page,
+        @RequestParam(defaultValue = "10")int size
+    ) {
+        
+        return ResponseEntity.ok(adminService.getAllUsers(page, size));
     }
 
     @DeleteMapping("/users/{id}")

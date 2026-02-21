@@ -19,6 +19,10 @@ import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 @Service
 @RequiredArgsConstructor
 public class AdminService {
@@ -54,9 +58,12 @@ public class AdminService {
                 .build();
     }
 
-    public List<UserProfileResponse> getAllUsers() {
-        return userRepository.findAll().stream()
-            .map(user -> UserProfileResponse.builder()
+
+    public Page<UserProfileResponse> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> usersPage = userRepository.findAll(pageable);
+
+        return usersPage.map(user-> UserProfileResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .name(user.getName())
@@ -64,8 +71,8 @@ public class AdminService {
                 .role(user.getRole())
                 .emailVerified(user.getEmailVerified())
                 .createdAt(user.getCreatedAt())
-                .build())
-            .toList();
+                .build());
+            
     }
 
    // En AdminService.java

@@ -36,14 +36,19 @@ public class SecurityConfig {
                       "/auth/register",
                       "/auth/refresh",
                       "/auth/forgot-password",
-                      "/auth/reset-password").permitAll()
+                      "/auth/reset-password",
+                      "/api-docs",          
+                      "/api-docs/**",        
+                      "/swagger-ui/**", 
+                      "/swagger-ui.html").permitAll()
+
       //Rutas protegidas de auth (requieren autenticación)
       .requestMatchers("/auth/me",
                         "/auth/logout",
                         "/auth/logout-all",
                         "/auth/change-password",
                         "/auth/profile").authenticated()
-                      .requestMatchers("/admin/**").hasRole("ADMIN")
+                      .requestMatchers("/admin/**").hasAuthority("ADMIN")
                       .anyRequest().authenticated()
     )
     .sessionManagement(sessionManager -> 
