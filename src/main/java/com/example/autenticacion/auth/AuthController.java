@@ -2,6 +2,7 @@ package com.example.autenticacion.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +53,7 @@ public class AuthController{
   @PostMapping("/register")
   public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){
 
-    return ResponseEntity.ok(authService.register(request));
+    return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
   }
 
     @PostMapping("/refresh")

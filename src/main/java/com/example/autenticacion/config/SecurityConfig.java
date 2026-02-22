@@ -50,6 +50,7 @@ public class SecurityConfig {
                         "/auth/change-password",
                         "/auth/profile").authenticated()
                       .requestMatchers("/admin/**").hasRole("ADMIN")
+                      .requestMatchers("/seller/**").hasRole("SELLER")
                       .anyRequest().authenticated()
     )
     .sessionManagement(sessionManager -> 

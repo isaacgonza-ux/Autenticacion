@@ -52,8 +52,8 @@ public class DataLoader implements CommandLineRunner {
         
         // 3. OPTIMIZACIÓN CLAVE: Preparar la lista para los lotes
         List<User> batchList = new ArrayList<>();
-        int totalUsersToCreate = 1; // <--- Cambia esto para probar tus límites (Ej: 1000, 10000, 50000)
-        int batchSize = 1; // Enviamos a Oracle de a 1000 a la vez
+        int totalUsersToCreate = 100; // <--- Cambia esto para probar tus límites (Ej: 1000, 10000, 50000)
+        int batchSize = 20; // Enviamos a Oracle lo que decidas aca
 
         for (int i = 1; i <= totalUsersToCreate; i++) {
             String firstName = faker.name().firstName();
