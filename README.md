@@ -69,11 +69,13 @@ La API divide el tráfico en tres niveles de permisos:
 
 - **Arquitectura :** Separación estricta entre Controladores, Lógica de Negocio (Services), Seguridad (Filtros) y Acceso a Datos (Repositorios).
 
-![image.png](attachment:82b50e7b-ee5d-44aa-9717-ea5674162402:image.png)
+<img width="1125" height="919" alt="image" src="https://github.com/user-attachments/assets/07016e74-96c4-4571-adc7-ed710b845a9a" />
+
 
 ## Diagrama arquitectura
 
-![image.png](attachment:2e567820-56f8-492f-974d-0a6bb56b0e2c:image.png)
+<img width="1440" height="700" alt="image" src="https://github.com/user-attachments/assets/0d6da40e-25fc-43d3-96a9-f106164076b7" />
+
 
 - **Documentación Interactiva:** Integración nativa con OpenAPI/Swagger, permitiendo probar la API desde el navegador con una interfaz gráfica automatizada.
 - **Manejo Global de Errores:** En lugar de devolver errores técnicos feos de Java (Error 500), la API captura las excepciones y devuelve respuestas JSON limpias y legibles para el frontend.
