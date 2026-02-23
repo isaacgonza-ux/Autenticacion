@@ -78,7 +78,8 @@ La API divide el tráfico en tres niveles de permisos:
 
 ## Diagrama de Secuencia: Flujo de Inicio de Sesión (Generación del JWT)
 Este diagrama explica cómo el usuario obtiene su token.
-sequenceDiagram
+<pre>
+    sequenceDiagram
     autonumber
     actor U as Usuario
     participant F as Frontend (React)
@@ -97,6 +98,8 @@ sequenceDiagram
     G-->>F: 200 OK + {token: "eyJhb..."}
     F->>F: Guarda token en localStorage
     F-->>U: Redirige a /admin/productos
+</pre>
+
 
 
 
