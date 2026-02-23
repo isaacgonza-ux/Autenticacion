@@ -78,27 +78,8 @@ La API divide el tráfico en tres niveles de permisos:
 
 ## Diagrama de Secuencia: Flujo de Inicio de Sesión (Generación del JWT)
 Este diagrama explica cómo el usuario obtiene su token.
-<pre>
-    sequenceDiagram
-    autonumber
-    actor U as Usuario
-    participant F as Frontend (React)
-    participant G as API Gateway (:8080)
-    participant A as Auth Service (:8081)
-    participant DB as Oracle Cloud DB
+<img width="1411" height="752" alt="image" src="https://github.com/user-attachments/assets/f6ea6009-5ff7-4ca6-afd8-b5386540c2a2" />
 
-    U->>F: Ingresa credenciales (email, password)
-    F->>G: POST /auth/login {credenciales}
-    G->>A: Enruta petición a /auth/login
-    A->>DB: Busca usuario por email
-    DB-->>A: Retorna datos y password hasheada
-    A->>A: Valida password con Bcrypt
-    A->>A: Genera y firma JWT con JWT_SECRET
-    A-->>G: 200 OK + {token: "eyJhb..."}
-    G-->>F: 200 OK + {token: "eyJhb..."}
-    F->>F: Guarda token en localStorage
-    F-->>U: Redirige a /admin/productos
-</pre>
 
 
 
