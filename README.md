@@ -76,6 +76,30 @@ La API divide el tráfico en tres niveles de permisos:
 
 <img width="1440" height="700" alt="image" src="https://github.com/user-attachments/assets/0d6da40e-25fc-43d3-96a9-f106164076b7" />
 
+## Diagrama de Secuencia: Flujo de Inicio de Sesión (Generación del JWT)
+Este diagrama explica cómo el usuario obtiene su token.
+sequenceDiagram
+    autonumber
+    actor U as Usuario
+    participant F as Frontend (React)
+    participant G as API Gateway (:8080)
+    participant A as Auth Service (:8081)
+    participant DB as Oracle Cloud DB
+
+    U->>F: Ingresa credenciales (email, password)
+    F->>G: POST /auth/login {credenciales}
+    G->>A: Enruta petición a /auth/login
+    A->>DB: Busca usuario por email
+    DB-->>A: Retorna datos y password hasheada
+    A->>A: Valida password con Bcrypt
+    A->>A: Genera y firma JWT con JWT_SECRET
+    A-->>G: 200 OK + {token: "eyJhb..."}
+    G-->>F: 200 OK + {token: "eyJhb..."}
+    F->>F: Guarda token en localStorage
+    F-->>U: Redirige a /admin/productos
+
+
+
 
 - **Documentación Interactiva:** Integración nativa con OpenAPI/Swagger, permitiendo probar la API desde el navegador con una interfaz gráfica automatizada.
 - **Manejo Global de Errores:** En lugar de devolver errores técnicos feos de Java (Error 500), la API captura las excepciones y devuelve respuestas JSON limpias y legibles para el frontend.
