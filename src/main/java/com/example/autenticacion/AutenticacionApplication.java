@@ -8,7 +8,7 @@ public class AutenticacionApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AutenticacionApplication.class, args);
-		System.out.println("Autenticación Application started successfully!");
+		System.out.println("Aplicación iniciada con éxito!");
 	}
 
 }

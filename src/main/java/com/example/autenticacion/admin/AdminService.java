@@ -1,4 +1,4 @@
-package com.example.autenticacion.auth;
+package com.example.autenticacion.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,8 +8,20 @@ import org.springframework.stereotype.Service;
 
 import com.example.autenticacion.user.User;
 import com.example.autenticacion.user.UserRepository;
+import com.example.autenticacion.auth.dto.CreateUserByAdminRequest;
+import com.example.autenticacion.auth.dto.MessageResponse;
+import com.example.autenticacion.auth.dto.UserProfileResponse;
+import com.example.autenticacion.token.PasswordResetTokenRepository;
+import com.example.autenticacion.token.RefreshTokenRepository;
+
+import jakarta.transaction.Transactional;
+
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +29,9 @@ public class AdminService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+
 
     public UserProfileResponse createUser(CreateUserByAdminRequest request) {
 
@@ -43,9 +58,12 @@ public class AdminService {
                 .build();
     }
 
-    public List<UserProfileResponse> getAllUsers() {
-        return userRepository.findAll().stream()
-            .map(user -> UserProfileResponse.builder()
+
+    public Page<UserProfileResponse> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> usersPage = userRepository.findAll(pageable);
+
+        return usersPage.map(user-> UserProfileResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .name(user.getName())
@@ -53,13 +71,22 @@ public class AdminService {
                 .role(user.getRole())
                 .emailVerified(user.getEmailVerified())
                 .createdAt(user.getCreatedAt())
-                .build())
-            .toList();
+                .build());
+            
     }
 
+   // En AdminService.java
+    @Transactional
     public MessageResponse deleteUser(Integer id) {
-        userRepository.deleteById(id);
-        return new MessageResponse(false, "Usuario eliminado");
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        // Limpiar tokens primero para evitar error de FK
+        refreshTokenRepository.deleteByUser(user);
+        passwordResetTokenRepository.deleteByUser(user);
+        
+        userRepository.delete(user);
+        return new MessageResponse(true, "Usuario eliminado correctamente");
     }
 
     public UserProfileResponse updateUser(Integer id, CreateUserByAdminRequest request) {

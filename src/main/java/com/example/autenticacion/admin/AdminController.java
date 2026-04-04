@@ -1,4 +1,4 @@
-package com.example.autenticacion.auth;
+package com.example.autenticacion.admin;
 
 
 import java.util.List;
@@ -12,7 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.autenticacion.auth.dto.CreateUserByAdminRequest;
+import com.example.autenticacion.auth.dto.MessageResponse;
+import com.example.autenticacion.auth.dto.UserProfileResponse;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -22,13 +29,17 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping("/create_users")
-    public ResponseEntity<UserProfileResponse> createUser(@RequestBody CreateUserByAdminRequest request) {
+    public ResponseEntity<UserProfileResponse> createUser(@Valid @RequestBody CreateUserByAdminRequest request) {
         return ResponseEntity.ok(adminService.createUser(request));
     }
 
     @GetMapping("/get_users")
-    public ResponseEntity<List<UserProfileResponse>> getAllUsers() {
-        return ResponseEntity.ok(adminService.getAllUsers());
+    public ResponseEntity<Page<UserProfileResponse>> getAllUsers(
+        @RequestParam(defaultValue = "0")int page,
+        @RequestParam(defaultValue = "10")int size
+    ) {
+        
+        return ResponseEntity.ok(adminService.getAllUsers(page, size));
     }
 
     @DeleteMapping("/users/{id}")
@@ -37,9 +48,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserProfileResponse> updateUser(
-            @PathVariable Integer id,
-            @RequestBody CreateUserByAdminRequest request) {
+    public ResponseEntity<UserProfileResponse> updateUser(@Valid @PathVariable Integer id, @RequestBody CreateUserByAdminRequest request) {
         return ResponseEntity.ok(adminService.updateUser(id, request));
     }
 }

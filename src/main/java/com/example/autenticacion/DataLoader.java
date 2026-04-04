@@ -1,7 +1,5 @@
 package com.example.autenticacion;
 
-
-
 import com.example.autenticacion.user.User;
 import com.example.autenticacion.user.UserRepository;
 import com.example.autenticacion.user.Role;
@@ -14,8 +12,11 @@ import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
+@Profile("test")
 public class DataLoader implements CommandLineRunner {
 
     @Autowired
@@ -27,78 +28,70 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         
-        // Solo cargar datos si la tabla está vacía
         if (userRepository.count() > 0) {
-            System.out.println("⚠️ Ya existen usuarios en la base de datos. Omitiendo carga inicial.");
+            System.out.println("Ya existen usuarios. Omitiendo carga inicial.");
             return;
         }
         
-        System.out.println("🔵 Iniciando carga de usuarios de prueba...");
+        System.out.println("Iniciando prueba de estrés de base de datos...");
+        long startTime = System.currentTimeMillis();
         
         Faker faker = new Faker();
 
-        // Crear 1 usuario ADMIN
-        try {
-            User admin = User.builder()
-                    .username("admin")
-                    .password(passwordEncoder.encode("admin123456"))
-                    .name("Administrator")
-                    .email("admin@tienda.com")
-                    .role(Role.ADMIN)
-                    .emailVerified(true)
+        // 1. Crear Admin 
+        User admin = User.builder()
+                .username("admin")
+                .password(passwordEncoder.encode("admin123456"))
+                .name("Administrator")
+                .email("admin@tienda.com")
+                .role(Role.ADMIN)
+                .emailVerified(true)
+                .build();
+        userRepository.save(admin);
+
+        // 2. OPTIMIZACIÓN CLAVE: Encriptar la contraseña genérica UNA SOLA VEZ
+        String defaultPasswordHash = passwordEncoder.encode("password123");
+        
+        // 3. OPTIMIZACIÓN CLAVE: Preparar la lista para los lotes
+        List<User> batchList = new ArrayList<>();
+        int totalUsersToCreate = 100; // <--- Cambia esto para probar tus límites (Ej: 1000, 10000, 50000)
+        int batchSize = 20; // Enviamos a Oracle lo que decidas aca
+
+        for (int i = 1; i <= totalUsersToCreate; i++) {
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String username = firstName.toLowerCase() + i;
+            
+            User user = User.builder()
+                    .username(username)
+                    .password(defaultPasswordHash) // Usamos el hash pre-calculado
+                    .name(firstName + " " + lastName)
+                    .email(username + "@email.com")
+                    .role(Role.USER)
+                    .emailVerified(faker.bool().bool())
                     .build();
             
-            userRepository.save(admin);
-            System.out.println("✅ Usuario ADMIN creado: admin / admin123456");
-        } catch (Exception e) {
-            System.err.println("❌ Error creando admin: " + e.getMessage());
-        }
+            batchList.add(user);
 
-        // Crear 30 usuarios regulares
-        for (int i = 1; i <= 5; i++) {
-            try {
-                String firstName = faker.name().firstName();
-                String lastName = faker.name().lastName();
-                String username = firstName.toLowerCase() + i;
-                
-                User user = User.builder()
-                        .username(username)
-                        .password(passwordEncoder.encode("password123")) // Misma contraseña para todos
-                        .name(firstName + " " + lastName)
-                        .email(username + "@email.com")
-                        .role(Role.USER)
-                        .emailVerified(faker.bool().bool()) // Algunos verificados, otros no
-                        .build();
-                
-                userRepository.save(user);
-                
-                if (i % 10 == 0) {
-                    System.out.println("📊 Usuarios creados: " + i + "/30");
-                }
-                
-            } catch (Exception e) {
-                System.err.println("❌ Error creando usuario " + i + ": " + e.getMessage());
+            // Cuando acumulamos 1000, disparamos a la base de datos
+            if (i % batchSize == 0) {
+                userRepository.saveAll(batchList); // Un solo viaje a la red por cada 1000
+                System.out.println("Lote insertado: " + i + "/" + totalUsersToCreate);
+                batchList.clear(); // Limpiamos la RAM de tu laptop
             }
         }
 
-        // Mostrar resumen
-        long totalUsers = userRepository.count();
-        long admins = userRepository.findAll().stream()
-                .filter(u -> u.getRole() == Role.ADMIN)
-                .count();
-        long regularUsers = totalUsers - admins;
-        
+        // Guardar cualquier sobrante si el total no es múltiplo de 1000
+        if (!batchList.isEmpty()) {
+            userRepository.saveAll(batchList);
+        }
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Usuario admin credenciales: admin/admin123456");
         System.out.println("===========================================");
-        System.out.println("✅ Carga de datos completada");
-        System.out.println("📊 Total de usuarios: " + totalUsers);
-        System.out.println("👑 Administradores: " + admins);
-        System.out.println("👤 Usuarios regulares: " + regularUsers);
-        System.out.println("===========================================");
-        System.out.println("🔑 Credenciales de prueba:");
-        System.out.println("   Admin: admin / admin123456");
-        System.out.println("   Users: john1 / password123");
-        System.out.println("          mary2 / password123");
-        System.out.println("          ... etc");
+        System.out.println("🚀 PRUEBA DE RENDIMIENTO COMPLETADA");
+        System.out.println("📊 Se insertaron " + totalUsersToCreate + " usuarios.");
+        System.out.println("⏱️ Tiempo total: " + (endTime - startTime) + " ms (" + ((endTime - startTime)/1000) + " segundos)");
         System.out.println("===========================================");
     }
 }

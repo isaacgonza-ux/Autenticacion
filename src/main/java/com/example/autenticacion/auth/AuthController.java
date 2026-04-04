@@ -2,6 +2,7 @@ package com.example.autenticacion.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.autenticacion.auth.dto.AuthResponse;
+import com.example.autenticacion.auth.dto.ChangePasswordRequest;
+import com.example.autenticacion.auth.dto.ForgotPasswordRequest;
+import com.example.autenticacion.auth.dto.LoginRequest;
+import com.example.autenticacion.auth.dto.LoginRequestAndroid;
+import com.example.autenticacion.auth.dto.MessageResponse;
+import com.example.autenticacion.auth.dto.RefreshTokenRequest;
+import com.example.autenticacion.auth.dto.RegisterRequest;
+import com.example.autenticacion.auth.dto.ResetPasswordRequest;
+import com.example.autenticacion.auth.dto.UpdateProfileRequest;
+import com.example.autenticacion.auth.dto.UserProfileResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +37,23 @@ public class AuthController{
   private final AuthService authService;
 
   @PostMapping("/login")
-  public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
+  public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){
 
     return ResponseEntity.ok(authService.login(request));
   }
 
-  @PostMapping("/register")
-  public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){
+  //login app android
+  @PostMapping("/login-android")
+  public ResponseEntity<AuthResponse>loginAndroid(@Valid@RequestBody LoginRequestAndroid request) {
+      
+      return ResponseEntity.ok(authService.loginAppAndroid(request));
+  }
+  
 
-    return ResponseEntity.ok(authService.register(request));
+  @PostMapping("/register")
+  public ResponseEntity<AuthResponse> register(@Valid@RequestBody RegisterRequest request){
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
   }
 
     @PostMapping("/refresh")
