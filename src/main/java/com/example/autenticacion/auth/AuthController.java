@@ -37,21 +37,21 @@ public class AuthController{
   private final AuthService authService;
 
   @PostMapping("/login")
-  public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
+  public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){
 
     return ResponseEntity.ok(authService.login(request));
   }
 
   //login app android
   @PostMapping("/login-android")
-  public ResponseEntity<AuthResponse>loginAndroid(@RequestBody LoginRequestAndroid request) {
+  public ResponseEntity<AuthResponse>loginAndroid(@Valid@RequestBody LoginRequestAndroid request) {
       
       return ResponseEntity.ok(authService.loginAppAndroid(request));
   }
   
 
   @PostMapping("/register")
-  public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){
+  public ResponseEntity<AuthResponse> register(@Valid@RequestBody RegisterRequest request){
 
     return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
   }

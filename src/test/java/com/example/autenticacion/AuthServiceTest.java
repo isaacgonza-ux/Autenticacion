@@ -94,16 +94,16 @@ public class AuthServiceTest {
     public void testRegister(){
 
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUsername("admin123");
-        registerRequest.setPassword("admin123456");
-        registerRequest.setName("admin");
-        registerRequest.setEmail("admin@tienda.com");
+        registerRequest.setUsername("user123");
+        registerRequest.setPassword("user123456");
+        registerRequest.setName("user");
+        registerRequest.setEmail("user@tienda.com");
 
         User mockUser = new User();
         mockUser.setId(1); 
-        mockUser.setUsername("admin123");
+        mockUser.setUsername("user123");
         mockUser.setPassword("contraseña_encriptada_$$$"); 
-        mockUser.setEmail("admin@tienda.com");
+        mockUser.setEmail("user@tienda.com");
         mockUser.setRole(Role.USER);
 
         when(passwordEncoder.encode(anyString())).thenReturn("contraseña_encriptada_$$$");
@@ -121,6 +121,26 @@ public class AuthServiceTest {
        verify(userRepository, times(1)).save(any(User.class));
        verify(passwordEncoder, times(1)).encode(registerRequest.getPassword());
 
+    }
+
+    @Test
+       public void testRegisterFail_WhenEmailAlreadyExists() {
+        
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail("user@tienda.com"); 
+        registerRequest.setUsername("testuser");
+        registerRequest.setPassword("password123");
+
+        // 2. Mocking: Simulamos que el repositorio encuentra un usuario con ese email
+        when(userRepository.existsByEmail(registerRequest.getEmail())).thenReturn(true);
+
+        // 3. Act & Assert: Ejecutamos el método y afirmamos que lanza la excepción esperada
+        assertThrows(RuntimeException.class, () -> {
+            authService.register(registerRequest);
+        });
+
+        // 4. Verify: Verificamos que no se intentó guardar un nuevo usuario
+        verify(userRepository, never()).save(any(User.class));
     }
         
     

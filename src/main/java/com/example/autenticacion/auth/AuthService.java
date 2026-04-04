@@ -3,12 +3,10 @@ package com.example.autenticacion.auth;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.hibernate.sql.Delete;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +15,13 @@ import com.example.autenticacion.user.UserRepository;
 import jakarta.transaction.Transactional;
 
 import com.example.autenticacion.user.User;
-import com.example.autenticacion.AutenticacionApplication;
 import com.example.autenticacion.auth.dto.AuthResponse;
 import com.example.autenticacion.auth.dto.ChangePasswordRequest;
 import com.example.autenticacion.auth.dto.ForgotPasswordRequest;
 import com.example.autenticacion.auth.dto.LoginRequest;
 import com.example.autenticacion.auth.dto.LoginRequestAndroid;
 import com.example.autenticacion.auth.dto.MessageResponse;
+import com.example.autenticacion.auth.dto.MessageResponse.MessageResponseBuilder;
 import com.example.autenticacion.auth.dto.RefreshTokenRequest;
 import com.example.autenticacion.auth.dto.RegisterRequest;
 import com.example.autenticacion.auth.dto.ResetPasswordRequest;
@@ -47,12 +45,13 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+  
    
    
    //login correo+contraseña
     @Transactional
     public AuthResponse login(LoginRequest request) {
-        
+
          // Autenticar
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())

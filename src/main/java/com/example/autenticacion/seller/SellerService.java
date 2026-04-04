@@ -4,6 +4,7 @@ import com.example.autenticacion.user.User;
 import com.example.autenticacion.auth.dto.UserProfileResponse;
 import com.example.autenticacion.user.UserRepository;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class SellerService {
    }
 
    //Listar usuarios
-   public Page<UserProfileResponse>getAllUsers(int page, int size){
+   public Page<UserProfileResponse>getAllUsers( int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         Page<User> usersPage = userRepository.findAll(pageable);
 

@@ -16,6 +16,7 @@ import com.example.autenticacion.auth.dto.CreateUserByAdminRequest;
 import com.example.autenticacion.auth.dto.MessageResponse;
 import com.example.autenticacion.auth.dto.UserProfileResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +29,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping("/create_users")
-    public ResponseEntity<UserProfileResponse> createUser(@RequestBody CreateUserByAdminRequest request) {
+    public ResponseEntity<UserProfileResponse> createUser(@Valid @RequestBody CreateUserByAdminRequest request) {
         return ResponseEntity.ok(adminService.createUser(request));
     }
 
@@ -47,9 +48,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserProfileResponse> updateUser(
-            @PathVariable Integer id,
-            @RequestBody CreateUserByAdminRequest request) {
+    public ResponseEntity<UserProfileResponse> updateUser(@Valid @PathVariable Integer id, @RequestBody CreateUserByAdminRequest request) {
         return ResponseEntity.ok(adminService.updateUser(id, request));
     }
 }
