@@ -110,30 +110,14 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!--oracle_sql-->
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc11</artifactId>
-            <version>23.3.0.23.09</version>
-        </dependency>
+       
 
-        <dependency>
-            <groupId>com.oracle.database.security</groupId>
-            <artifactId>oraclepki</artifactId>
-            <version>21.11.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.oracle.database.security</groupId>
-            <artifactId>osdt_core</artifactId>
-            <version>21.11.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.oracle.database.security</groupId>
-            <artifactId>osdt_cert</artifactId>
-            <version>21.11.0.0</version>
-        </dependency>
+            <!-- Microsoft SQL Server JDBC Driver -->
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <scope>runtime</scope>
+            </dependency>
 
             <!-- Para envío de emails (implementar después) -->
             <dependency>
